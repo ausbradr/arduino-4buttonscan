@@ -1,0 +1,83 @@
+//Button Scanning routine by Brad Rogers, 10th March 2021.
+//Free for all reuse
+
+// This snippet is going to be bare bones and all below code can be copied into the right spots to provide you with plug/play button checking. See the demos for more info on how they work. 
+
+
+//4buttonscan prerequisites
+//Set the pins we'll be using for all 4 buttons
+int buttonA = 2;
+int buttonB = 3;
+int buttonC = 4;
+int buttonD = 5;
+//Define the variables used to store whether each button is pressed
+int buttonAstate=0;
+int buttonBstate=0;
+int buttonCstate=0;
+int buttonDstate=0;
+//define the variable and zero it, for keypad total. This will help us indicate simultaneous keypresses, if your program is looking for that.
+int keypadtotal=0;
+
+
+void setup() {
+//4buttonscan void setup lines:
+//For the pins we're connecting the buttons to, we need to define them as inputs:
+pinMode(buttonA, INPUT);
+pinMode(buttonB, INPUT);
+pinMode(buttonC, INPUT);
+pinMode(buttonD, INPUT);
+
+}
+
+void loop() {
+// Literally just call keypadcheckloop to halt the program until keypress, or call keypadcheckonce in your own loop to multitask. Don't copy anything here, just call as you need in your own code flow.
+keypadcheckloop();
+}
+
+//4buttonscan subroutines that get added below just outside of void loop to get things running. 
+void keypadcheckloop(){
+do
+{
+//reset keypad total
+keypadtotal =0;
+//check the buttons, and don't return to void loop until we have a keypress.
+buttonAstate = digitalRead(buttonA);
+if (buttonAstate!=0){
+  keypadtotal = keypadtotal + 10;
+}
+buttonBstate = digitalRead(buttonB);
+if (buttonBstate!=0){
+  keypadtotal = keypadtotal + 50;
+}
+buttonCstate = digitalRead(buttonC);
+if (buttonCstate!=0){
+  keypadtotal = keypadtotal + 100;
+}
+buttonDstate = digitalRead(buttonD);
+if (buttonDstate!=0){
+  keypadtotal = keypadtotal + 200;
+}
+} while (keypadtotal < 10);
+}
+
+void keypadcheckonce(){
+//reset keypad total
+keypadtotal =0;
+//check the keypad once and return control to void loop
+buttonAstate = digitalRead(buttonA);
+if (buttonAstate!=0){
+  keypadtotal = keypadtotal + 10;
+}
+buttonBstate = digitalRead(buttonB);
+if (buttonBstate!=0){
+  keypadtotal = keypadtotal + 50;
+}
+buttonCstate = digitalRead(buttonC);
+if (buttonCstate!=0){
+  keypadtotal = keypadtotal + 100;
+}
+buttonDstate = digitalRead(buttonD);
+if (buttonDstate!=0){
+  keypadtotal = keypadtotal + 200;
+}
+}
