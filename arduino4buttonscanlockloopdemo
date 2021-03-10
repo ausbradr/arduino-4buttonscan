@@ -1,0 +1,150 @@
+//Button Scanning routine by Brad Rogers, 10th March 2021.
+//Free for all reuse
+
+//In this example, we're using 4 buttons, they'll be attached to inputs 2,3,4,5 in a pulldown resistor config. We'll be making them active HIGH. 
+//The aim here is to trap the program in a loop halting program flow, until the user presses a button. We don't wish to return to void loop until the user hits a button. 
+//We'll also have an alternative subroutine to use, should the program require other stuff to be done while checking for keypresses. 
+//In this instance the coder will implement their own loop which will repeatedly call the alt subroutine while doing other stuff like updating LEDs or running stepper motors.
+//The way this works is that each button will add a value to keypad total. Keypadtotal will remain at 0 when no buttons are pressed.
+//The only way the lock loop will exit is with a keypad total greater than zero. 
+//Each button will be assigned a value. If multiple keys are pressed, those values will add, which can be handy for multi keypress requirements.
+//The values of each button will be spaced out in such a way that 2 buttons pressed together won't add to a value that would signify a third button that the user isn't pressing. Ie, 10, 50, 100, 200. 
+
+//Note: the serial routines can be commented out or removed once you're confident that things are working. They're there to ensure program flow is as I want it to be. 
+
+//NOW, for the code:
+
+//Set the pins we'll be using for all 4 buttons
+int buttonA = 2;
+int buttonB = 3;
+int buttonC = 4;
+int buttonD = 5;
+
+//Define the variables used to store whether each button is pressed
+int buttonAstate=0;
+int buttonBstate=0;
+int buttonCstate=0;
+int buttonDstate=0;
+
+//define the variable and zero it, for keypad total. This will help us indicate simultaneous keypresses, if your program is looking for that.
+int keypadtotal=0;
+
+void setup() {
+  // put your setup code here, to run once:
+
+//Set the serial port. Comment this out if you're removing all the serial statements. We're only using this for debug, and demonstrating to you.
+Serial.begin(9600);
+
+//For the pins we're connecting the buttons to, we need to define them as inputs:
+pinMode(buttonA, INPUT);
+pinMode(buttonB, INPUT);
+pinMode(buttonC, INPUT);
+pinMode(buttonD, INPUT);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+//In this main program, all we're doing is doing a bunch of serial printing of what the user is pressing, and calling the keypadcheckloop, of which we'll stay in that function until a key is pressed.
+
+Serial.println("I'm in void loop");
+keypadcheckloop();
+Serial.println("I've returned to void loop");
+Serial.print("My Keypad total is: ");
+Serial.print(keypadtotal);
+Serial.println();
+}
+
+
+void keypadcheckloop(){
+do
+{
+
+//you can get rid of this delay, it's just there to make serial readout a bit easier on the eyes
+delay(100);
+
+keypadtotal =0;
+Serial.println("I'm in lock loop");
+
+buttonAstate = digitalRead(buttonA);
+if (buttonAstate!=0){
+  keypadtotal = keypadtotal + 10;
+}
+
+buttonBstate = digitalRead(buttonB);
+if (buttonBstate!=0){
+  keypadtotal = keypadtotal + 50;
+}
+
+buttonCstate = digitalRead(buttonC);
+if (buttonCstate!=0){
+  keypadtotal = keypadtotal + 100;
+}
+
+buttonDstate = digitalRead(buttonD);
+if (buttonDstate!=0){
+  keypadtotal = keypadtotal + 200;
+}
+
+
+Serial.print ("Kaypad total set to: ");
+Serial.print (keypadtotal);
+Serial.println();
+
+
+Serial.print ("BUTTON STATE: ");
+Serial.print (buttonAstate);
+Serial.print (buttonBstate);
+Serial.print (buttonCstate);
+Serial.print (buttonDstate);
+
+Serial.println();
+  
+} while (keypadtotal < 10);
+
+}
+
+void keypadcheckonce(){
+//this is the routine that checks once, but isn't used in this demo. See the once demo for more info.
+
+//you can get rid of this delay, it's just there to make serial readout a bit easier on the eyes
+delay(100);
+
+keypadtotal =0;
+Serial.println("I'm checking the keypad");
+
+buttonAstate = digitalRead(buttonA);
+if (buttonAstate!=0){
+  keypadtotal = keypadtotal + 10;
+}
+
+buttonBstate = digitalRead(buttonB);
+if (buttonBstate!=0){
+  keypadtotal = keypadtotal + 50;
+}
+
+buttonCstate = digitalRead(buttonC);
+if (buttonCstate!=0){
+  keypadtotal = keypadtotal + 100;
+}
+
+buttonDstate = digitalRead(buttonD);
+if (buttonDstate!=0){
+  keypadtotal = keypadtotal + 200;
+}
+
+
+Serial.print ("Kaypad total set to: ");
+Serial.print (keypadtotal);
+Serial.println();
+
+
+Serial.print ("BUTTON STATE: ");
+Serial.print (buttonAstate);
+Serial.print (buttonBstate);
+Serial.print (buttonCstate);
+Serial.print (buttonDstate);
+
+Serial.println();
+  
+}
